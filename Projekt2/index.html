@@ -10,18 +10,35 @@
        <form>
         <label for="Project">Projektname:</label>
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-        <button type="button" id="button1" onclick="callService(document.getElementById('project').value)">Suchen</button>
+        <button type="button" id="button1" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
+    </div>
+
+    <div>
+        <h2>Projekte und Mitarbeiter nach Stadt</h2>
+        <form>
+            <label for="city">Stadt:</label>
+            <select id="city" name="city" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+                <option value="Zurich">Zürich</option>
+                <option value="Bern">Bern</option>
+                <option value="Basel">Basel</option>
+                <option value="Lucerne">Luzern</option>
+                <option value="Geneva">Genf</option>
+                <option value="Lausanne">Lausanne</option>
+            </select><br>
+            <button type="button" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
+        </form>
     </div>
     
     
 
     <SCRIPT>
+        var url; 
         
-        function callService() {
+        function queryProject() {
             var string = document.getElementById('project').value;
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8080/?project=" + string;
+            url = "http://localhost:8080/?project=" + string;
             request.open("GET", url, true);
             request.onreadystatechange = function () {
                 var table;
@@ -51,16 +68,60 @@
                         table += "</TABLE>";
 
                         // Create the popup window and add the table to it
-                        var popup = document.createElement('div2');
-                        popup.classList.add('popup');
-                        popup.innerHTML = '<span class="close" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">&times;</span>' + table;
-                        document.body.appendChild(popup);
+                        popup(table);
+
+                        
+                       
                     } catch(e){
                         console.error(e);
                     }
                 }
             }
             request.send(null);
+        }
+
+        function queryCity(){
+            var string = document.getElementById('city').value;
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8080/?city=" + string;
+            request.open("GET", url, true);
+            request.onreadystatechange = function () {
+                var table;
+                if (request.readyState == request.DONE && request.status == 200) {
+                    try{    
+                        var data = JSON.parse(request.responseText);
+                        table = "<TABLE>";
+                        table += "<tr><th>FirstName</th><th>LastName</th><th>ProjectName</th><th>CityName</th></tr>";    
+                        for (var row in data) {
+                            table += ("<TR>");
+                            var colCount = 0;
+                            for (var field in data[row]) {
+                                table += ("<TD>" + data[row][field] + "</TD>");
+                            
+                                colCount++;
+                                    if (colCount == 4) { // limit to 4 columns
+                                        break;
+                                    }
+                            }
+                            table += ("</TR>");
+                        }
+                        table += "</TABLE>";
+
+                        popup(table);
+                        
+                    } catch(e){
+                        console.error(e);
+                    }
+                }
+            }
+            request.send(null);
+        }
+
+        function popup(table){
+            var popup = document.createElement('div2');
+            popup.classList.add('popup');
+            popup.innerHTML = '<span class="close" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">&times;</span>' + table;
+            document.body.appendChild(popup);
         }
     </SCRIPT>
 </BODY>
