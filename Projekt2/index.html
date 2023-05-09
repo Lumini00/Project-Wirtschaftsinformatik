@@ -10,7 +10,7 @@
        <form>
         <label for="Project">Projektname:</label>
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-        <button type="button" id="button1" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
+        <button type="submit" id="button1" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
     </div>
 
@@ -26,7 +26,7 @@
                 <option value="Geneva">Genf</option>
                 <option value="Lausanne">Lausanne</option>
             </select><br>
-            <button type="button" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
+            <button type="submit" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
     </div>
     
@@ -120,8 +120,8 @@
         function popup(table){
             var popup = document.createElement('div2');
             popup.classList.add('popup');
-            popup.innerHTML = '<span class="close" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">&times;</span>' + table;
-            document.body.appendChild(popup);
+            popup.innerHTML = '<div class="popup-content"><span class="close" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">&times;</span>' + table + '</div>';
+            document.body.appendChild(popup)
         }
     </SCRIPT>
 </BODY>

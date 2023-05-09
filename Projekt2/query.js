@@ -19,7 +19,7 @@ myServer.on("request", function returnResults(req, res) {
     var q = url.parse(req.url, true);
     var path = q.path;
 
-    if(path.includes("projectName")){
+    if(path.includes("project")){
         var name = q.query.name;
         var filter = [name];
         query = "SELECT * FROM project WHERE projectName=?"
