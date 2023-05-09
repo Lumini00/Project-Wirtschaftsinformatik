@@ -10,9 +10,11 @@
        <form>
         <label for="Project">Projektname:</label>
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-        <button type="submit" id="button1" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
+        <button type="submit" id="button1" onclick="event.preventDefault();queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
     </div>
+
+    <div id="output"></div> 
 
     <div>
         <h2>Projekte und Mitarbeiter nach Stadt</h2>
@@ -26,7 +28,7 @@
                 <option value="Geneva">Genf</option>
                 <option value="Lausanne">Lausanne</option>
             </select><br>
-            <button type="submit" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
+            <button type="submit" onclick="event.preventDefault();queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
     </div>
     
@@ -34,14 +36,17 @@
 
     <SCRIPT>
         var url; 
+        var table;
         
         function queryProject() {
             var string = document.getElementById('project').value;
             var request = new XMLHttpRequest();
             url = "http://localhost:8080/?project=" + string;
             request.open("GET", url, true);
+            
+            
+
             request.onreadystatechange = function () {
-                var table;
                 if (request.readyState == request.DONE && request.status == 200) {
                     try{    
                         var data = JSON.parse(request.responseText);
@@ -66,15 +71,12 @@
                             table += ("</TR>");
                         }
                         table += "</TABLE>";
-
-                        // Create the popup window and add the table to it
-                        popup(table);
-
-                        
+                        output.innerHTML = table;
                        
                     } catch(e){
                         console.error(e);
                     }
+                
                 }
             }
             request.send(null);
@@ -107,7 +109,8 @@
                         }
                         table += "</TABLE>";
 
-                        popup(table);
+                        var container = document.getElementById('table-container');
+                        container.innerHTML
                         
                     } catch(e){
                         console.error(e);
@@ -117,12 +120,9 @@
             request.send(null);
         }
 
-        function popup(table){
-            var popup = document.createElement('div2');
-            popup.classList.add('popup');
-            popup.innerHTML = '<div class="popup-content"><span class="close" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">&times;</span>' + table + '</div>';
-            document.body.appendChild(popup)
-        }
+        
+        
+
     </SCRIPT>
 </BODY>
 
