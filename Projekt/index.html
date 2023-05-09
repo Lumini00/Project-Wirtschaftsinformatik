@@ -1,0 +1,52 @@
+<html>
+
+<BODY>
+    <H1 id="titel1">Suche in der Datenbank</H1>
+    <FORM NAME="Formular1">
+        Name: <INPUT TYPE="TEXT" NAME="suche" SIZE="20" /></BR><BR />
+        <INPUT TYPE="BUTTON" ID="Button1" TYPE="SUBMIT" VALUE="Suche!" />
+    </FORM>
+    <DIV id="ausgabe"></DIV>
+
+    <SCRIPT>
+        document.addEventListener("DOMContentLoaded", function (event) { initialize(); });
+        var ausgabe;
+
+        function initialize() {
+            ausgabe = document.getElementById("ausgabe");
+            var button1 = document.getElementById("Button1");
+            button1.addEventListener("click",
+                function (event) {
+                    var eingabe = document.forms["Formular1"]["suche"].value;
+                    callService(eingabe);
+                    event.preventDefault();
+                });
+        }
+
+        function callService(suchstring) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8080/?name=" + suchstring;
+            request.open("GET", url, true);
+            request.onreadystatechange = function () {
+                var tabelle;
+                if (request.readyState == request.DONE && request.status == 200) {
+                    var data = JSON.parse(request.responseText);
+                    tabelle = "<TABLE border='1' cellpadding='10px'>";
+                    for (var row in data) {
+                        tabelle += ("<TR>");
+                        for (var field in data[row]) {
+                            tabelle += ("<TD>" +
+                                data[row][field] + "</TD>");
+                        }
+                        tabelle += ("</TR>");
+                    }
+                    tabelle += "</TABLE>";
+                    ausgabe.innerHTML = tabelle;
+                }
+            }
+            request.send(null);
+        }
+    </SCRIPT>
+</BODY>
+
+</html>
