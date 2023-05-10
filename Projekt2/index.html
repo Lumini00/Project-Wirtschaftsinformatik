@@ -10,7 +10,7 @@
        <form>
         <label for="Project">Projektname:</label>
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-        <button type="submit" id="button1" onclick="event.preventDefault();queryProject(document.getElementById('project').value)">Suchen</button>
+        <button type="submit" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
     </div>
 
@@ -28,7 +28,7 @@
                 <option value="Geneva">Genf</option>
                 <option value="Lausanne">Lausanne</option>
             </select><br>
-            <button type="submit" onclick="event.preventDefault();queryCity(document.getElementById('city').value)" >Suchen</button>
+            <button type="submit" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
     </div>
     
@@ -43,7 +43,6 @@
             var request = new XMLHttpRequest();
             url = "http://localhost:8080/?project=" + string;
             request.open("GET", url, true);
-            
             
 
             request.onreadystatechange = function () {
@@ -76,7 +75,6 @@
                     } catch(e){
                         console.error(e);
                     }
-                
                 }
             }
             request.send(null);
@@ -108,9 +106,6 @@
                             table += ("</TR>");
                         }
                         table += "</TABLE>";
-
-                        var container = document.getElementById('table-container');
-                        container.innerHTML
                         
                     } catch(e){
                         console.error(e);
@@ -119,9 +114,6 @@
             }
             request.send(null);
         }
-
-        
-        
 
     </SCRIPT>
 </BODY>

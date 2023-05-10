@@ -20,22 +20,22 @@ myServer.on("request", function returnResults(req, res) {
     var path = q.path;
 
     if(path.includes("project")){
-        var name = q.query.name;
+        var name = q.query.project;
         var filter = [name];
         query = "SELECT * FROM project WHERE projectName=?"
     }
 
-    else if(path.includes("cityName")){ 
-        var name = q.query.cityName;            
+    else if(path.includes("city")){ 
+        var name = q.query.name;            
         var filter = [name];                    
-        query = "SELECT DISTINCT firstName, lastName, projectName, cityname  FROM ((city INNER JOIN project on city.cityID = project.cityID) INNER JOIN works_on on project.projectID=works_on.projectID) INNER JOIN employee on works_on.employeeID=employee.employeeID WHERE cityname = ? ORDER BY projectName, lastName, firstName;"
+        query = "SELECT DISTINCT firstName, lastName, projectName, name  FROM ((city INNER JOIN project on city.cityID = project.cityID) INNER JOIN works_on on project.projectID=works_on.projectID) INNER JOIN employee on works_on.employeeID=employee.employeeID WHERE name = ? ORDER BY projectName, lastName, firstName;"
     }
 
     con.query(query, filter,
         function (err, result, fields) {
             if (err) console.log("Fehler: " + err.sqlMessage);
             res.end(JSON.stringify(result));
-            
+            console.log(result)
         });
     con.end(function (err) {
         console.error(err)
