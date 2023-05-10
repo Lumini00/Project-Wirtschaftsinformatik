@@ -26,7 +26,7 @@ myServer.on("request", function returnResults(req, res) {
     }
 
     else if(path.includes("city")){ 
-        var name = q.query.name;            
+        var name = q.query.city;            
         var filter = [name];                    
         query = "SELECT DISTINCT firstName, lastName, projectName, name  FROM ((city INNER JOIN project on city.cityID = project.cityID) INNER JOIN works_on on project.projectID=works_on.projectID) INNER JOIN employee on works_on.employeeID=employee.employeeID WHERE name = ? ORDER BY projectName, lastName, firstName;"
     }
