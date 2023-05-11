@@ -12,9 +12,9 @@
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
         <button type="submit" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
-    </div>
+       <div id="projectoutput"></div> 
 
-    <div id="output"></div> 
+    </div>
 
     <div>
         <h2>Projekte und Mitarbeiter nach Stadt</h2>
@@ -30,8 +30,20 @@
             </select><br>
             <button type="submit" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
+        <div id="cityoutput"></div> 
     </div>
     
+    <div>
+        <h2>Projekte in Kostenbereich zwischen Kosten1 und Kosten2 </h2>
+        <form>
+            <label for="minCost">Minimale Kosten:</label>
+            <input type="number" id="minCost" name="minCost" placeholder="Minimale Kosten eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
+            <label for="maxCost">Maximale Kosten:</label>
+            <input type="number" id="maxCost" name="maxCost" placeholder="Maximale Kosten eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
+            <button type="submit" onclick="queryCost(document.getElementById('minCost').value, document.getElementById('maxCost').value)">Suchen</button>
+        </form>
+        <div id="costoutput"></div> 
+    </div>
     
 
     <SCRIPT>
@@ -70,7 +82,7 @@
                             table += ("</TR>");
                         }
                         table += "</TABLE>";
-                        output.innerHTML = table;
+                        projectoutput.innerHTML = table;
                         
                     } catch(e){
                         console.error(e);
@@ -106,6 +118,7 @@
                             table += ("</TR>");
                         }
                         table += "</TABLE>";
+                        cityoutput.innerHTML = table;
                         
                     } catch(e){
                         console.error(e);
@@ -115,6 +128,42 @@
             request.send(null);
         }
 
+        function queryCost(){
+            var string1 = document.getElementById('minCost').value;
+            var string2 = document.getElementById('maxCost').value;
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8080/?minCost=" + string1 + "&maxCost=" + string2;
+            request.open("GET", url, true);
+            request.onreadystatechange = function () {
+                var table;
+                if (request.readyState == request.DONE && request.status == 200) {
+                    try{    
+                        var data = JSON.parse(request.responseText);
+                        table = "<TABLE>";
+                        table += "<tr><th>ProjectID</th><th>ProjectName</th><th>MaximumCosts</th></tr>";    
+                        for (var row in data) {
+                            table += ("<TR>");
+                            var colCount = 0;
+                            for (var field in data[row]) {
+                                table += ("<TD>" + data[row][field] + "</TD>");
+                            
+                                colCount++;
+                                    if (colCount == 3) { // limit to 3 columns
+                                        break;
+                                    }
+                            }
+                            table += ("</TR>");
+                        }
+                        table += "</TABLE>";
+                        costoutput.innerHTML = table;
+                        
+                    } catch(e){
+                        console.error(e);
+                    }
+                }
+            }
+            request.send(null);
+        }
     </SCRIPT>
 </BODY>
 

@@ -31,6 +31,15 @@ myServer.on("request", function returnResults(req, res) {
         query = "SELECT DISTINCT firstName, lastName, projectName, name  FROM ((city INNER JOIN project on city.cityID = project.cityID) INNER JOIN works_on on project.projectID=works_on.projectID) INNER JOIN employee on works_on.employeeID=employee.employeeID WHERE name = ? ORDER BY projectName, lastName, firstName;"
     }
 
+    else if(path.includes("minCost")){
+        var minValue = q.query.minCost;
+        var maxValue = q.query.maxCost;
+        var filter = [minValue, maxValue];                    
+        query = "SELECT ProjectID, ProjectName, MaximumCosts FROM project WHERE maximumCosts BETWEEN ? AND ? ORDER BY maximumCosts;"
+    }
+    
+
+
     con.query(query, filter,
         function (err, result, fields) {
             if (err) console.log("Fehler: " + err.sqlMessage);
