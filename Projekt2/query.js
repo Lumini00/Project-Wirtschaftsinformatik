@@ -3,7 +3,7 @@ var http = require('http');
 var url = require('url');
 
 var myServer = http.createServer();
-myServer.on("request", function returnResults(req, res) {
+myServer.on("request", async function returnResults(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*"); //optional
     res.writeHead(200, { 'Content-Type': 'application/json' });
 
@@ -37,11 +37,11 @@ myServer.on("request", function returnResults(req, res) {
         var filter = [minValue, maxValue];                    
         query = "SELECT ProjectID, ProjectName, MaximumCosts FROM project WHERE maximumCosts BETWEEN ? AND ? ORDER BY maximumCosts;"
     }
-    
+
 
 
     con.query(query, filter,
-        function (err, result, fields) {
+        async function (err, result, fields) {
             if (err) console.log("Fehler: " + err.sqlMessage);
             res.end(JSON.stringify(result));
             console.log(result)

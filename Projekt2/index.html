@@ -49,7 +49,8 @@
     <SCRIPT>
         var url; 
         var table;
-        
+        var projectoutput
+
         function queryProject() {
             var string = document.getElementById('project').value;
             var request = new XMLHttpRequest();
@@ -82,7 +83,8 @@
                             table += ("</TR>");
                         }
                         table += "</TABLE>";
-                        projectoutput.innerHTML = table;
+                        projectoutput = document.getElementById("projectoutput").innerHTML = table
+                        //projectoutput.innerHTML = table;
                         
                     } catch(e){
                         console.error(e);
