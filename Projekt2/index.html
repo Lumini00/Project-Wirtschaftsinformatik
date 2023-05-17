@@ -10,7 +10,7 @@
        <form>
         <label for="Project">Projektname:</label>
         <input type="text" name="project" id="project" placeholder="Projektname eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-        <button type="submit" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
+        <button type="button" onclick="queryProject(document.getElementById('project').value)">Suchen</button>
        </form>
        <div id="projectoutput"></div> 
 
@@ -28,7 +28,7 @@
                 <option value="Geneva">Genf</option>
                 <option value="Lausanne">Lausanne</option>
             </select><br>
-            <button type="submit" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
+            <button type="button" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
         <div id="cityoutput"></div> 
     </div>
@@ -40,7 +40,7 @@
             <input type="number" id="minCost" name="minCost" placeholder="Minimale Kosten eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
             <label for="maxCost">Maximale Kosten:</label>
             <input type="number" id="maxCost" name="maxCost" placeholder="Maximale Kosten eingeben" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"><br>
-            <button type="submit" onclick="queryCost(document.getElementById('minCost').value, document.getElementById('maxCost').value)">Suchen</button>
+            <button type="button" onclick="queryCost(document.getElementById('minCost').value, document.getElementById('maxCost').value)">Suchen</button>
         </form>
         <div id="costoutput"></div> 
     </div>
@@ -142,7 +142,7 @@
                     try{    
                         var data = JSON.parse(request.responseText);
                         table = "<TABLE>";
-                        table += "<tr><th>ProjectID</th><th>ProjectName</th><th>MaximumCosts</th></tr>";    
+                        table += "<tr><th>ProjectID</th><th>ProjectName</th><th>Costs</th></tr>";    
                         for (var row in data) {
                             table += ("<TR>");
                             var colCount = 0;

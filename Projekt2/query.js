@@ -1,5 +1,6 @@
 var mysql = require('mysql2');
 var http = require('http');
+var https = require('https');
 var url = require('url');
 
 var myServer = http.createServer();
@@ -18,6 +19,7 @@ myServer.on("request", async function returnResults(req, res) {
     var query; 
     var q = url.parse(req.url, true);
     var path = q.path;
+    var temp = q.temp;
 
     if(path.includes("project")){
         var name = q.query.project;
@@ -37,7 +39,6 @@ myServer.on("request", async function returnResults(req, res) {
         var filter = [minValue, maxValue];                    
         query = "SELECT ProjectID, ProjectName, MaximumCosts FROM project WHERE maximumCosts BETWEEN ? AND ? ORDER BY maximumCosts;"
     }
-
 
 
     con.query(query, filter,
