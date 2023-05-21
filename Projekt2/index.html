@@ -31,6 +31,7 @@
             <button type="button" onclick="queryCity(document.getElementById('city').value)" >Suchen</button>
         </form>
         <div id="cityoutput"></div> 
+        
     </div>
     
     <div>
@@ -43,6 +44,7 @@
             <button type="button" onclick="queryCost(document.getElementById('minCost').value, document.getElementById('maxCost').value)">Suchen</button>
         </form>
         <div id="costoutput"></div> 
+        
     </div>
     
 
@@ -50,11 +52,12 @@
         var url; 
         var table;
         var projectoutput
+        var temp;
 
         function queryProject() {
-            var string = document.getElementById('project').value;
+            var project = document.getElementById('project').value;
             var request = new XMLHttpRequest();
-            url = "http://localhost:8080/?project=" + string;
+            url = "http://localhost:8080/?project=" + project;
             request.open("GET", url, true);
             
 
@@ -81,10 +84,11 @@
                                 }
                             }
                             table += ("</TR>");
+
                         }
                         table += "</TABLE>";
                         projectoutput = document.getElementById("projectoutput").innerHTML = table
-                        //projectoutput.innerHTML = table;
+                        
                         
                     } catch(e){
                         console.error(e);
@@ -95,9 +99,10 @@
         }
 
         function queryCity(){
-            var string = document.getElementById('city').value;
+            var city = document.getElementById('city').value;
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8080/?city=" + string;
+            var url = "http://localhost:8080/?city=" + city;
+            
             request.open("GET", url, true);
             request.onreadystatechange = function () {
                 var table;
@@ -105,36 +110,69 @@
                     try{    
                         var data = JSON.parse(request.responseText);
                         table = "<TABLE>";
-                        table += "<tr><th>FirstName</th><th>LastName</th><th>ProjectName</th><th>CityName</th></tr>";    
+                        table += "<tr><th>FirstName</th><th>LastName</th><th>ProjectName</th><th>CityName</th><th>Temperature [°C]</tr>";    
+                        var rowPromises = []
                         for (var row in data) {
-                            table += ("<TR>");
-                            var colCount = 0;
-                            for (var field in data[row]) {
-                                table += ("<TD>" + data[row][field] + "</TD>");
-                            
-                                colCount++;
+                            (function (row) {
+                                var promise = queryTemp(city).then(function (temperature) {
+                                table += "<tr>";
+                                var colCount = 0;
+                                for (var field in data[row]) {
+                                    table += "<td>" + data[row][field] + "</td>";
+                                    colCount++;
                                     if (colCount == 4) { // limit to 4 columns
-                                        break;
+                                    break;
                                     }
+                                }
+                                table += "<td>" + temperature + "</td>";
+                                table += "</tr>";
+                                });
+                                rowPromises.push(promise);
+                            })(row);
                             }
-                            table += ("</TR>");
-                        }
-                        table += "</TABLE>";
-                        cityoutput.innerHTML = table;
-                        
+                            Promise.all(rowPromises).then(function () {
+                            table += "</table>";
+                            cityoutput.innerHTML = table;
+                            });
+             
                     } catch(e){
                         console.error(e);
                     }
                 }
             }
             request.send(null);
+            
+        }
+
+        function queryTemp(city){
+            return new Promise(function (resolve, reject) {
+            var apiKey = '1e85e71962d30e3596aaeefd515bb294';
+            var url_temp = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+            var request = new XMLHttpRequest();
+            request.open("GET", url_temp, true);
+            request.onreadystatechange = function () {
+            if (request.readyState == request.DONE && request.status == 200) {
+                var data = JSON.parse(request.responseText);
+                var temperatureKelvin = data.main.temp;
+                var temperatureCelsius = temperatureKelvin - 273.15; // Convert from Kelvin to Celsius
+                resolve(temperatureCelsius.toFixed(2))
+            }
+            }
+            request.send(null);
+        });
+        }
+        function httpGet(url_temp){
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", url_temp, false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
         }
 
         function queryCost(){
-            var string1 = document.getElementById('minCost').value;
-            var string2 = document.getElementById('maxCost').value;
+            var minCost = document.getElementById('minCost').value;
+            var maxCost = document.getElementById('maxCost').value;
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8080/?minCost=" + string1 + "&maxCost=" + string2;
+            var url = "http://localhost:8080/?minCost=" + minCost + "&maxCost=" + maxCost;
             request.open("GET", url, true);
             request.onreadystatechange = function () {
                 var table;
